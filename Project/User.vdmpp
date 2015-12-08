@@ -1,0 +1,31 @@
+class User
+/*
+  Contains the core model related to the User Class.
+  Defines the variables and the operations available to the Control System Operator.
+  FEUP, MFES, 2015/16.
+*/
+types
+	public userName = seq1 of char;
+
+	
+values
+-- TODO Define values here
+
+instance variables
+	private name: userName;
+	private userGrup: set of User := { };
+
+operations
+	public User : userName ==> User
+		User(nm) == (
+			name := nm;
+			userGrup := {};
+			return self
+		);
+
+	
+functions
+-- TODO Define functiones here
+traces
+-- TODO Define Combinatorial Test Traces here
+end User

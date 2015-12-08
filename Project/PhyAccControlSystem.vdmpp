@@ -1,0 +1,34 @@
+class PhyAccControlSystem
+/*
+  Contains the core model of the Physical Access Control System.
+  Defines the variables and the operations available to the Control System Operator.
+  FEUP, MFES, 2015/16.
+*/
+types
+	public currentDate = Date;
+
+values
+-- TODO Define values here
+instance variables
+	--private PolicyEntryPoints: map String to set of Rule := {|->};
+	private accPol : AccessPolicy;
+	private usersList: set of User := { };
+	private accessCardList: set of AccessCard := { };
+	private log : seq of (EntryPoint * AccessCard) := [];
+	
+operations
+	public PhyAccControlSystem : () ==> PhyAccControlSystem
+		PhyAccControlSystem() == (
+		--accPol = ();
+		usersList := {};
+		accessCardList := {};
+			return self
+		);
+	
+	
+functions
+ --RequestAccess(cardId, EntryPoint)
+ --GetRules
+traces
+-- TODO Define Combinatorial Test Traces here
+end PhyAccControlSystem

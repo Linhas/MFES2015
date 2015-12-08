@@ -1,0 +1,40 @@
+class Date
+types
+
+
+instance variables
+	public day : nat1;
+	public month : nat1;
+	public year : nat1;
+	public value : nat1;
+
+inv day <= 31 and
+		year >= 1900 and
+		month <= 12 and
+		if month in set {4, 6, 9, 11}
+		then day <= 30
+		else (month = 2) => (day <=29)
+		
+	operations
+ -- constructor, initializes the Date
+	public Date : nat1 * nat1 * nat1  ==> Date
+		Date(d, m, y) == (
+				day := d;
+				month := m;
+				year := y;
+				return self
+		);
+		public getDateValue : Date ==> nat1
+			getDateValue(Date) ==(
+			value := Date.year * 365 + Date.month * 30 + Date.day;			
+			return value
+			);
+	
+	public isExpired : Date * Date ==> bool
+		isExpired(currentDate, expirationDate) == (
+		if getDateValue(currentDate) > getDateValue(expirationDate)
+		then return true
+		else return false
+		);
+
+end Date

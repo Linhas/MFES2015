@@ -1,0 +1,39 @@
+class AccessCard
+types
+
+values
+
+instance variables
+		private expirationDate: Date; 
+		private userList : set of User;
+		private cardId : nat;
+		
+		
+operations
+  public AccessCard : nat ==> AccessCard
+  AccessCard(idC) == (
+  cardId := idC;
+  userList := {};
+  return self
+  );
+  
+  public getUserList : () ==> set of User
+  getUserList() == (
+  return userList
+  );
+  
+  public addUserToList : User ==> ()
+  addUserToList(u) == (
+  if not u in set userList
+  	then userList := userList union {u} 
+  );
+  
+ -- public removeUserfromCard : User ==> ()
+ -- removeUserfromCard(u) == (
+  -- here it has to identify the user...and the groups the user belongs to
+  --);
+functions
+-- TODO Define functiones here
+traces
+-- TODO Define Combinatorial Test Traces here
+end AccessCard
