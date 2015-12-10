@@ -6,30 +6,34 @@ types
 
 values
  public nameDays : set of (seq1 of char) = { "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
+ --public nameDays = [ <Monday>,<Tuesday>,<Wednesday>,<Thursday>,<Friday>,<Saturday>,<Sunday>]
 instance variables
 	public day : nat1;
 	public month : nat1;
-	public year : nat1;
+	public year : nat;
 	
 	public hour : nat := 0;
 	public minute : nat := 0;
 	
+--	public idweekDays : set of nat := {0,1,2,3,4,5,6};
 
+--	public idtonameDays : map set of nat to set of (seq1 of char) := {idweekDays |-> nameDays};
+	
 	public nameDay : seq1 of char;
-
+	public weekDayId : nat;
 
 inv day <= 31 and
-		year >= 1900 and
+		(year >= 1900 or year = 0) and
 		month <= 12 and
 		if month in set {4, 6, 9, 11}
 		then day <= 30
 		else (month = 2) => (day <=29);
 		
-inv hour <=24 and hour > 0 and minute < 60 and minute >= 0;
+inv hour <24 and hour >= 0 and minute < 60 and minute >= 0;
 		
 	operations
  -- constructor, initializes the Date in format Day, Month, Year ==> for expiration Date in Card
-	public Date : nat1 * nat1 * nat1 ==> Date
+	public Date : nat1 * nat1 * nat ==> Date
 		Date(d, m, y) == (
 				day := d;
 				month := m;
@@ -53,21 +57,52 @@ inv hour <=24 and hour > 0 and minute < 60 and minute >= 0;
 				return self
 		);
 
-	
-		
-	--ha a comparaca de pegar na current Date e ver se está no intrevalo de dias da semana/horas de uma possivel regra
-	--A faaaazer~~	
-		
 
 		public getNameDay : () ==>  seq1 of char
-			getNameDay() ==(
+			getNameDay() ==( 
 			return nameDay
 			);
 		
-		
+		public getNameDayId : seq1 of char ==> nat
+			getNameDayId(nd) == (
+			
+			if nd = "Monday" then weekDayId := 1 else 
+				if nd = "Tuesday" then weekDayId := 2 else 
+					if nd = "Wednesday" then weekDayId := 3 else 
+						if nd = "Thursday" then weekDayId := 4 else 
+							if nd = "Friday" then weekDayId := 5 else 
+								if nd = "Saturday" then weekDayId := 6 else 
+									if nd = "Sunday" then weekDayId := 7
+									else weekDayId := 0; 
+			
+			return weekDayId
+			);		
+
+-- Compara a Hora de abertura e hora de fecho com data actual. Se 
+	public isOnOpeningHours : Date * Date * Date ==> bool
+		isOnOpeningHours(opH,clH,currentDate) == (
+		if (currentDate.hour < opH.hour or currentDate.hour > clH.hour 
+				or (currentDate.hour = opH.hour and currentDate.minute < opH.minute) 
+				or (currentDate.hour = clH.hour and currentDate.minute > clH.minute)) 
+			then return false 
+		else return true
+		);
+
+-- Compara o dia de semana de abertura e hora de fecho com a data actual. 
+-- Utiliza os Ids atribuidos aos dias de semana para o fazer, {Segunda,..,Domingo} e {1,...,7}. 
+-- Se dia de abertura tem um id > que id de fecho faz o complementar
+-- A acrescentar no topo uma variável bool que torne o código menos trolha.
+	public isOnOpeningWeekDays : Date * Date * Date ==> bool
+		isOnOpeningWeekDays(opD, clD, currentDate) == (
+		if(getNameDayId(opD.nameDay) > getNameDayId(clD.nameDay))
+			then return (getNameDayId(currentDate.nameDay) >= getNameDayId(opD.nameDay) or getNameDayId(currentDate.nameDay) <= getNameDayId(clD.nameDay))
+			else return (getNameDayId(currentDate.nameDay) >= getNameDayId(opD.nameDay) and getNameDayId(currentDate.nameDay) <= getNameDayId(clD.nameDay))
+		); 
 		
 	public isStarted : Date * Date ==> bool
 		isStarted(currentDate, startDate) == (
+		if(startDate.year = 0)
+			then return true else
 		if ((currentDate.year < startDate.year)or
 			(currentDate.year = startDate.year and currentDate.month < startDate.month) or
 				currentDate.year = startDate.year and currentDate.month = startDate.month and
