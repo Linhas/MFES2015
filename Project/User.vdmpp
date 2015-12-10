@@ -9,21 +9,35 @@ types
 
 	
 values
--- TODO Define values here
 
 instance variables
+-- se calhar pôr um id aqui, para caso que dos users serem iguais
 	private name: userName;
-	private userGrup: set of User := { };
+	public userGroup: set of User := { };
 
 operations
 	public User : userName ==> User
 		User(nm) == (
 			name := nm;
-			userGrup := {};
+			userGroup := {};
 			return self
 		);
 
-	
+	public searchGroupInUser: User ==> bool
+		searchGroupInUser(ug) ==(
+		if ug in set userGroup
+		then return true
+		else return false
+		);
+		
+	public addGroupToUser : User ==> ()
+  	addGroupToUser(u) == (
+  	if not u in set userGroup
+  	then userGroup := userGroup union {u} 
+  );
+  
+  
+  
 functions
 -- TODO Define functiones here
 traces

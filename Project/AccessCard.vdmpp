@@ -4,36 +4,38 @@ types
 values
 
 instance variables
-		private expirationDate: Date; 
-		private userList : set of User;
+		private expirationDate: [Date] := nil; 
+		private userObj : User;
 		private cardId : nat;
 		
 		
 operations
-  public AccessCard : nat ==> AccessCard
-  AccessCard(idC) == (
+--não esquecer de fazer a verificação se o id é permitido no PhyAccControlSystem
+  public AccessCard : nat * User ==> AccessCard
+  AccessCard(idC, u) == (
   cardId := idC;
-  userList := {};
+  userObj := u;
   return self
   );
   
-  public getUserList : () ==> set of User
-  getUserList() == (
-  return userList
+  public setExpirationDate: Date ==> ()
+  	setExpirationDate(dt) == (
+  	expirationDate := dt;
+  	);
+  	
+  public getExpirationDate: () ==> Date
+  	getExpirationDate() == (
+  	return expirationDate
+  	);
+
+ public changeUserofCard : User ==> ()
+ 	changeUserofCard(u) == (
+  userObj := u
   );
   
-  public addUserToList : User ==> ()
-  addUserToList(u) == (
-  if not u in set userList
-  	then userList := userList union {u} 
-  );
   
- -- public removeUserfromCard : User ==> ()
- -- removeUserfromCard(u) == (
-  -- here it has to identify the user...and the groups the user belongs to
-  --);
 functions
--- TODO Define functiones here
+
 traces
--- TODO Define Combinatorial Test Traces here
+
 end AccessCard

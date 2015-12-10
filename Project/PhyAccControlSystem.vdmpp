@@ -5,25 +5,39 @@ class PhyAccControlSystem
   FEUP, MFES, 2015/16.
 */
 types
-	public currentDate = Date;
+--Change to DenyAccess, Authorized, Indeterminate
+AccessEvent = <YouShallNotPass> | <EnterMountDoom> | <ThatIDoNotKnow>;
 
 values
--- TODO Define values here
+
 instance variables
+
+	public currentDate : Date;
 	--private PolicyEntryPoints: map String to set of Rule := {|->};
-	private accPol : AccessPolicy;
+	
+	-- precisamos de todos os users para aceder a um em particular, cria-se um user, vê-se já existe
 	private usersList: set of User := { };
-	private accessCardList: set of AccessCard := { };
-	private log : seq of (EntryPoint * AccessCard) := [];
+	
+	--precisamos do allCards para guardar todos, para encontrar um user e etc
+	private allCards: set of AccessCard := { };
+	
+	--facto: o set of access rules e uma access policy 
+	private AccessPolicy : set of AccessRule := {};
+
+		
+	-- O que o log precisa no minimo, fazer um print aceitável disto
+	private log : set of (seq of (Facility * AccessCard * Date)) := {};
+	
 	
 operations
-	public PhyAccControlSystem : () ==> PhyAccControlSystem
-		PhyAccControlSystem() == (
-		--accPol = ();
-		usersList := {};
-		accessCardList := {};
+
+	public PhyAccControlSystem : Date ==> PhyAccControlSystem
+		PhyAccControlSystem(d) == (
+		currentDate := d;
 			return self
 		);
+		-- Makes request sentence
+	--public requestAccess: Card`	
 	
 	
 functions

@@ -2,39 +2,89 @@ class Date
 types
 
 
+--public NameDay :: <Monday> | <Tuesday> | <Wednesday> | <Thursday>| <Friday>| <Saturday>| <Sunday>;
+
+values
+ public nameDays : set of (seq1 of char) = { "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
 instance variables
 	public day : nat1;
 	public month : nat1;
 	public year : nat1;
-	public value : nat1;
+	
+	public hour : nat := 0;
+	public minute : nat := 0;
+	
+
+	public nameDay : seq1 of char;
+
 
 inv day <= 31 and
 		year >= 1900 and
 		month <= 12 and
 		if month in set {4, 6, 9, 11}
 		then day <= 30
-		else (month = 2) => (day <=29)
+		else (month = 2) => (day <=29);
+		
+inv hour <=24 and hour > 0 and minute < 60 and minute >= 0;
 		
 	operations
- -- constructor, initializes the Date
-	public Date : nat1 * nat1 * nat1  ==> Date
+ -- constructor, initializes the Date in format Day, Month, Year ==> for expiration Date in Card
+	public Date : nat1 * nat1 * nat1 ==> Date
 		Date(d, m, y) == (
 				day := d;
 				month := m;
 				year := y;
 				return self
 		);
-		public getDateValue : Date ==> nat1
-			getDateValue(Date) ==(
-			value := Date.year * 365 + Date.month * 30 + Date.day;			
-			return value
-			);
+		
+ -- constructor, initializes the Date in format Day, Month, Year, dayOfTheWeek, hour, minutes ==> for currentDate, and for temporalConstraint
+		public Date : nat1 * nat1 * nat1 * seq1 of char* nat * nat ==> Date
+		Date(d, m, y, nd, h, min) == (
+				day := d;
+				month := m;
+				year := y;
+				
+				hour := h;
+				minute := min;
+
+				if nd in set nameDays
+				then nameDay := nd;
+						
+				return self
+		);
+
 	
+		
+	--ha a comparaca de pegar na current Date e ver se está no intrevalo de dias da semana/horas de uma possivel regra
+	--A faaaazer~~	
+		
+
+		public getNameDay : () ==>  seq1 of char
+			getNameDay() ==(
+			return nameDay
+			);
+		
+		
+		
+	public isStarted : Date * Date ==> bool
+		isStarted(currentDate, startDate) == (
+		if ((currentDate.year < startDate.year)or
+			(currentDate.year = startDate.year and currentDate.month < startDate.month) or
+				currentDate.year = startDate.year and currentDate.month = startDate.month and
+				currentDate.day < startDate.day)
+				then return false
+			else return true
+		);
+	
+		 
 	public isExpired : Date * Date ==> bool
 		isExpired(currentDate, expirationDate) == (
-		if getDateValue(currentDate) > getDateValue(expirationDate)
-		then return true
-		else return false
+		if ((currentDate.year > expirationDate.year)or
+			(currentDate.year = expirationDate.year and currentDate.month > expirationDate.month) or
+				currentDate.year = expirationDate.year and currentDate.month = expirationDate.month and
+				currentDate.day > expirationDate.day)
+				then return false
+			else return true
 		);
 
 end Date
