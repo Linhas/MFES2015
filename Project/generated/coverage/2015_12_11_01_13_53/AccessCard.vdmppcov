@@ -33,15 +33,6 @@ operations
   userObj := u
   );
   
-  public isExpired : Date ==> bool
-		isExpired(currentDate) == (
-		if ((currentDate.year > expirationDate.year)or
-			(currentDate.year = expirationDate.year and currentDate.month > expirationDate.month) or
-				currentDate.year = expirationDate.year and currentDate.month = expirationDate.month and
-				currentDate.day > expirationDate.day)
-				then return false
-			else return true
-		);
   
 functions
 

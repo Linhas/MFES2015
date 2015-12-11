@@ -1,0 +1,48 @@
+class PhyAccControlSystem
+/*
+  Contains the core model of the Physical Access Control System.
+  Defines the variables and the operations available to the Control System Operator.
+  FEUP, MFES, 2015/16.
+*/
+types
+--Change to DenyAccess, Authorized, Indeterminate
+AccessEvent = <YouShallNotPass> | <EnterMountDoom> | <ThatIDoNotKnow>;
+
+values
+
+instance variables
+
+	public currentDate : Date;
+	--private PolicyEntryPoints: map String to set of Rule := {|->};
+	
+	-- precisamos de todos os users para aceder a um em particular, cria-se um user, vê-se já existe
+	private usersList: set of User := { };
+	
+	--precisamos do allCards para guardar todos, para encontrar um user e etc
+	private allCards: set of AccessCard := { };
+	
+	--facto: o set of access rules e uma access policy 
+	private AccessPolicy : set of AccessRule := {};
+
+		
+	-- O que o log precisa no minimo, fazer um print aceitável disto
+	private log : set of (seq of (Facility * AccessCard * Date)) := {};
+	
+	
+operations
+
+	public PhyAccControlSystem : Date ==> PhyAccControlSystem
+		PhyAccControlSystem(d) == (
+		currentDate := d;
+			return self
+		);
+		-- Makes request sentence
+	--public requestAccess: Card`	
+	
+	
+functions
+ --RequestAccess(cardId, EntryPoint)
+ --GetRules
+traces
+-- TODO Define Combinatorial Test Traces here
+end PhyAccControlSystem

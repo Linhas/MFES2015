@@ -1,0 +1,34 @@
+class TestPACS is subclass of GeneralTestCases
+
+operations
+--Tests For Date
+  public testDate: () ==> ()
+	  testDate() == (
+	  	dcl p: Date := new Date(20, 12, 2016);
+	  	dcl l: Date := new Date(26, 12, 2016, "Monday", 9, 30);
+	  	
+	  	assertEqual(20, p.day);
+	  	assertEqual(12, p.month);
+	  	assertEqual(2016, p.year);
+	  	
+	  	
+	  	assertEqual(26, l.day);
+	  	assertEqual(12, l.month);
+	  	assertEqual(2016, l.year);
+	  	assertEqual("Monday", l.getNameDay());
+	  	assertEqual(1, l.getNameDayId());
+	  	assertEqual(9, l.hour);
+	  	assertEqual(30, l.minute);
+
+	  );
+	  
+	  --Date(nat1,nat1,nat)
+	  --Date(nat1,nat1,nat,seq1 of char,nat, nat)
+	  --getNameDay()
+	  --getNameDayId(seq1 of char)
+	  --isExpired(Date, Date)
+	  --isOnOpeningHours(Date,Date,Date)
+	  --isOnOpeningWeekDays(Date,Date,Date)
+	  --isStarted
+
+end TestPACS

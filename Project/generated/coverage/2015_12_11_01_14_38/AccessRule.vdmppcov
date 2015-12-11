@@ -1,0 +1,45 @@
+class AccessRule
+
+-- related to which Entry point
+-- affects which User
+-- 
+types
+
+
+
+public Rule ::	target : [Target]
+								effect : AccessEvent;
+ 
+
+public AccessEvent = <YouShallNotPass> | <EnterMountDoom> | <ThatIDoNotKnow>;
+
+public Target ::	users : set of User
+									facilities : set of Facility
+									timeRestriction : set of Date
+values
+-- TODO Define values here
+instance variables
+
+--precisamos de todos as facilities para guardar todas as facilities que podem ser entry point
+	private entryPoint: set of Facility := { };
+	
+	private users: set of User := { };
+
+
+operations
+
+
+public GetEffect: Rule ==> AccessEvent
+	GetEffect(r) ==
+		return r.effect;
+		
+--public AccessRule: (User|User`userGroup) * (Facility|seq of char) ==> ()
+
+
+-- constructor, initializes the Rule
+
+functions
+-- TODO Define functiones here
+traces
+-- TODO Define Combinatorial Test Traces here
+end AccessRule

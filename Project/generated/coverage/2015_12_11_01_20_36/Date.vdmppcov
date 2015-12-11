@@ -53,8 +53,6 @@ inv hour <24 and hour >= 0 and minute < 60 and minute >= 0;
 
 				if nd in set nameDays
 				then nameDay := nd;
-				
-				weekDayId := getNameDayId();
 						
 				return self
 		);
@@ -79,8 +77,50 @@ inv hour <24 and hour >= 0 and minute < 60 and minute >= 0;
 			
 			return weekDayId
 			);		
-			
 
-functions
+-- Compara a Hora de abertura e hora de fecho com data actual. Se 
+	public isOnOpeningHours : Date * Date * Date ==> bool
+		isOnOpeningHours(opH,clH,currentDate) == (
+		if (currentDate.hour < opH.hour or currentDate.hour > clH.hour 
+				or (currentDate.hour = opH.hour and currentDate.minute < opH.minute) 
+				or (currentDate.hour = clH.hour and currentDate.minute > clH.minute)) 
+			then return false 
+		else return true
+		);
+
+-- Compara o dia de semana de abertura e hora de fecho com a data actual. 
+-- Utiliza os Ids atribuidos aos dias de semana para o fazer, {Segunda,..,Domingo} e {1,...,7}. 
+-- Se dia de abertura tem um id > que id de fecho faz o complementar
+-- Acrescentar dcl dlc dcl.
+	public isOnOpeningWeekDays : Date * Date * Date ==> bool
+		isOnOpeningWeekDays(opD, clD, currentDate) == (
+		if(opD.getNameDayId() > clD.getNameDayId())
+			then return (currentDate.getNameDayId() >= opD.getNameDayId() or currentDate.getNameDayId() <= clD.getNameDayId())
+			else return (currentDate.getNameDayId() >= opD.getNameDayId() and currentDate.getNameDayId() <= clD.getNameDayId())
+		); 
+
+		
+	public isStarted : Date * Date ==> bool
+		isStarted(currentDate, startDate) == (
+		if(startDate.year = 0)
+			then return true else
+		if ((currentDate.year < startDate.year)or
+			(currentDate.year = startDate.year and currentDate.month < startDate.month) or
+				currentDate.year = startDate.year and currentDate.month = startDate.month and
+				currentDate.day < startDate.day)
+				then return false
+			else return true
+		);
+	
+		 
+	public isExpired : Date * Date ==> bool
+		isExpired(currentDate, expirationDate) == (
+		if ((currentDate.year > expirationDate.year)or
+			(currentDate.year = expirationDate.year and currentDate.month > expirationDate.month) or
+				currentDate.year = expirationDate.year and currentDate.month = expirationDate.month and
+				currentDate.day > expirationDate.day)
+				then return false
+			else return true
+		);
 
 end Date
