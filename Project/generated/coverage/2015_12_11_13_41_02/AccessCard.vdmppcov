@@ -1,0 +1,50 @@
+class AccessCard
+types
+
+values
+
+instance variables
+		private expirationDate: [Date] := nil; 
+		private userObj : User;
+		private cardId : nat;
+		
+		
+operations
+--não esquecer de fazer a verificação se o id é permitido no PhyAccControlSystem
+  public AccessCard : nat * User ==> AccessCard
+  AccessCard(idC, u) == (
+  cardId := idC;
+  userObj := u;
+  return self
+  );
+  
+  public setExpirationDate: Date ==> ()
+  	setExpirationDate(dt) == (
+  	expirationDate := dt;
+  	);
+  	
+  public getExpirationDate: () ==> Date
+  	getExpirationDate() == (
+  	return expirationDate
+  	);
+
+ public changeUserofCard : User ==> ()
+ 	changeUserofCard(u) == (
+  userObj := u
+  );
+  
+  public isExpired : Date ==> bool
+		isExpired(currentDate) == (
+		if ((currentDate.year > expirationDate.year)or
+			(currentDate.year = expirationDate.year and currentDate.month > expirationDate.month) or
+				currentDate.year = expirationDate.year and currentDate.month = expirationDate.month and
+				currentDate.day > expirationDate.day)
+				then return false
+			else return true
+		);
+  
+functions
+
+traces
+
+end AccessCard

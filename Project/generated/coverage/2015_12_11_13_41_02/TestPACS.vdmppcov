@@ -1,0 +1,38 @@
+class TestPACS is subclass of GeneralTestCases
+
+operations
+--Tests For Date
+  public testDate: () ==> ()
+	  testDate() == (
+	  	dcl p: Date := new Date(20, 12, 2016);
+	  	dcl l: Date := new Date(26, 12, 2016, "Monday", 9, 30);
+	  	
+	  	assertEqual(20, p.day);
+	  	assertEqual(12, p.month);
+	  	assertEqual(2016, p.year);
+	  	
+	  	
+	  	assertEqual(26, l.day);
+	  	assertEqual(12, l.month);
+	  	assertEqual(2016, l.year);
+	  	assertEqual("Monday", l.getNameDay());
+	  	assertEqual(1, l.getNameDayId());
+	  	assertEqual(9, l.hour);
+	  	assertEqual(30, l.minute);
+
+	  );
+	  
+--Tests For User
+	public testUser: () ==> ()
+		testUser() == (
+		dcl u: User := new User("Anna");
+		dcl us: User := new User("MecaStudent");
+		dcl usq : User := new User("Student");
+		u.addGroupToUser(us);
+		us.addGroupToUser(usq);
+		assertEqual("Anna", u.getName());
+		assertTrue(u.searchGroupInUser(us));
+		
+		);
+		
+end TestPACS

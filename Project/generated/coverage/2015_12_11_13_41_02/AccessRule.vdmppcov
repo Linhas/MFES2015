@@ -1,0 +1,94 @@
+class AccessRule
+
+-- related to which Entry point
+-- affects which User
+-- 
+types
+
+
+
+public Rule ::	target : [Target]
+								effect : AccessEvent;
+ 
+
+public AccessEvent = <YouShallNotPass> | <EnterMountDoom> | <ThatIDoNotKnow>;
+
+public Target ::	users : set of User
+									facilities : set of Facility
+									timeRestriction : set of Date
+values
+-- TODO Define values here
+instance variables
+
+--precisamos de todos as facilities para guardar todas as facilities que podem ser entry point
+	private entryPoint: set of Facility := { };
+	
+	private users: set of User := { };
+
+
+operations
+
+
+public GetEffect: Rule ==> AccessEvent
+	GetEffect(r) ==
+		return r.effect;
+		
+--public AccessRule: (User|User`userGroup) * (Facility|seq of char) ==> ()
+
+--TAMBEM NÃO ACHO QUE SEJA AQUI. O MAIS PROVAVEL É QUE SEJA ONDE FIZERMOS A DECISÃO 
+-- Compara a Hora de abertura e hora de fecho com data actual. Se 
+	public isOnOpeningHours : Date * Date * Date ==> bool
+		isOnOpeningHours(opH,clH,currentDate) == (
+		if (currentDate.hour < opH.hour or currentDate.hour > clH.hour 
+				or (currentDate.hour = opH.hour and currentDate.minute < opH.minute) 
+				or (currentDate.hour = clH.hour and currentDate.minute > clH.minute)) 
+			then return false 
+		else return true
+		);
+
+-- Compara o dia de semana de abertura e hora de fecho com a data actual. 
+-- Utiliza os Ids atribuidos aos dias de semana para o fazer, {Segunda,..,Domingo} e {1,...,7}. 
+-- Se dia de abertura tem um id > que id de fecho faz o complementar
+-- Acrescentar dcl dlc dcl.
+	public isOnOpeningWeekDays : Date * Date * Date ==> bool
+		isOnOpeningWeekDays(opD, clD, currentDate) == (
+		if(opD.getNameDayId() > clD.getNameDayId())
+			then return (currentDate.getNameDayId() >= opD.getNameDayId() or currentDate.getNameDayId() <= clD.getNameDayId())
+			else return (currentDate.getNameDayId() >= opD.getNameDayId() and currentDate.getNameDayId() <= clD.getNameDayId())
+		); 
+
+--mudar o lugar desta funções, fi-la da maneira errada
+	public isInTimeInterval : Date * Date * Date ==> bool
+		isInTimeInterval(startDate, expirationDate, currentDate) == (
+		
+		dcl hasStarted : bool := false;
+		dcl hasEnded : bool := false;
+		dcl onTime : bool := false; 
+			
+		if ((currentDate.year < startDate.year)or
+			(currentDate.year = startDate.year and currentDate.month < startDate.month) or
+				currentDate.year = startDate.year and currentDate.month = startDate.month and
+				currentDate.day < startDate.day)
+				then hasStarted := true
+			else hasStarted := false;
+			
+		if ((currentDate.year > expirationDate.year)or
+		(currentDate.year = expirationDate.year and currentDate.month > expirationDate.month) or
+			currentDate.year = expirationDate.year and currentDate.month = expirationDate.month and
+			currentDate.day > expirationDate.day)
+			then hasEnded := false
+		else hasEnded := true;
+		
+		if (hasStarted and hasEnded or startDate.year = 0)
+			then onTime := true;
+		
+		return onTime;
+		);
+	
+-- constructor, initializes the Rule
+
+functions
+-- TODO Define functiones here
+traces
+-- TODO Define Combinatorial Test Traces here
+end AccessRule

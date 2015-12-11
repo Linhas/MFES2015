@@ -1,0 +1,60 @@
+class User
+/*
+  Contains the core model related to the User Class.
+  Defines the variables and the operations available to the Control System Operator.
+  FEUP, MFES, 2015/16.
+*/
+types
+
+	
+values
+
+instance variables
+-- se calhar pôr um id aqui, para caso que dos users serem iguais
+	private name: seq1 of char;
+	public userGroup: set of User := { };
+
+operations
+	public User : seq1 of char ==> User
+		User(nm) == (
+			name := nm;
+			userGroup := {};
+			return self
+		);
+	
+	public getName : () ==> seq1 of char
+  	getName() == (
+  	return name;
+  	);
+  
+	public searchGroupInUser: User ==> bool
+		searchGroupInUser(ug) ==(
+		if ug in set userGroup
+		then return true
+		else return false
+		);
+		
+	public addGroupToUser : User ==> ()
+  	addGroupToUser(u) == (
+  	if not u in set userGroup
+  	then userGroup := userGroup union {u} 
+  );
+  
+--  public removeGroupFromUser : User ==> ()
+ -- 	removeGroupFromUser(u) == (
+  	--	removeUserGroup(u, userGroup);
+ -- );
+  
+functions
+-- ESTA FUNÇÃO ATÉ QUE PODE SER UTIL
+removeUserGroup : User * seq of (User) -> seq of User
+	removeUserGroup(u, UsGroup) ==
+		let i in set inds UsGroup be st UsGroup(i) = u
+		in
+			UsGroup(1,...,i-1) ^ UsGroup(i+1,..., len UsGroup)
+			
+		pre u in set elems UsGroup;
+
+traces
+-- TODO Define Combinatorial Test Traces here
+end User
