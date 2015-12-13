@@ -7,81 +7,33 @@ types
 
 
 
+public Rule ::	target : [Target]
+								effect : AccessEvent;
+ 
+
 public AccessEvent = <YouShallNotPass> | <EnterMountDoom> | <ThatIDoNotKnow>;
 
 public Target ::	users : set of User
 									facilities : set of Facility
-									timeRestriction : set of Date;
-									
-
+									timeRestriction : set of Date
 values
 -- TODO Define values here
 instance variables
 
-
-	public userTarget : set of User;
-	public facilityTarget : set of Facility;
-	public accessEve : AccessEvent := <ThatIDoNotKnow>;
-	public dateBegin : Date := new Date(0,0,0);
-	public dateEnd : Date:= new Date(0,0,0);
-	public priority : nat;
-	public temporalConstraint : bool := false;
+--precisamos de todos as facilities para guardar todas as facilities que podem ser entry point
+	private entryPoint: set of Facility := { };
+	
+	private users: set of User := { };
 
 
 operations
 
--- FALTA id que identifique a regra para poder incluir excecoes relativas a uma regra. 
--- FALTA int de permissao. 
--- E isto e tudo indispensavel
+
+public GetEffect: Rule ==> AccessEvent
+	GetEffect(r) ==
+		return r.effect;
 		
 --public AccessRule: (User|User`userGroup) * (Facility|seq of char) ==> ()
-public AccessRule: set of User * set of Facility * AccessEvent * nat ==> AccessRule
-	AccessRule(u,f,a, pri) ==(
-	userTarget := u;
-	facilityTarget := f;
-	accessEve := a;
-	priority := pri;
-	return self
-	);
-	
-public AccessRule: set of User * set of Facility * Date * Date * AccessEvent * nat ==> AccessRule
-	AccessRule(u,f, d1, d2, a, pri) ==(
-	userTarget := u;
-	facilityTarget := f;
-	accessEve := a;
-	dateBegin := d1;
-	dateEnd := d2;
-	priority := pri;
-	temporalConstraint := true;
-	return self
-	);
-
-public getUserTarget: () ==> set of User 
-	getUserTarget() ==(
-	return userTarget;
-	);
-	
-public searchUserInTarget: User ==> bool
-	searchUserInTarget(u) == (
-		if (u in set userTarget)
-			then return true
-			else return false
-	);
-	
-public getPriority: () ==> nat
-	getPriority() == (
-	return priority
-	);
-	
-public searchFacilityInTarget: Facility ==> bool
-	searchFacilityInTarget(f) ==(
-		if(f in set facilityTarget)
-			then return true
-			else return false
-	);
---	public addExceptions;
--- ADD USER / FACILITY TO RULE
--- REMOVE USER / FACILITY FROM RULE
 
 --TAMBEM NÃO ACHO QUE SEJA AQUI. O MAIS PROVAVEL É QUE SEJA ONDE FIZERMOS A DECISÃO 
 -- Compara a Hora de abertura e hora de fecho com data actual. Se 
@@ -132,7 +84,6 @@ public searchFacilityInTarget: Facility ==> bool
 		
 		return onTime;
 		);
-		
 	
 -- constructor, initializes the Rule
 

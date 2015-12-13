@@ -2,7 +2,7 @@ class AccessCard
 types
 
 values
--- NAO ESQUECER DE FAZER UMA VERIFICAÇAO QUANDO TIVER A CRIAR UM CARTAO SE O ID JA EXISTE.
+
 instance variables
 		private expirationDate: [Date] := nil; 
 		private userObj : User;

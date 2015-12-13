@@ -13,8 +13,7 @@ AccessEvent = <YouShallNotPass> | <EnterMountDoom> | <ThatIDoNotKnow>;
 values
 
 instance variables
-	public resulList : seq of AccessRule := [];
-	public setList : seq of AccessRule := [];
+
 	public currentDate : Date;
 	--private PolicyEntryPoints: map String to set of Rule := {|->};
 	
@@ -25,7 +24,7 @@ instance variables
 	private allCards: set of AccessCard := {};
 	
 	--facto: o set of access rules e uma access policy 
-	public accessPolicy : seq of AccessRule := [];
+	private AccessPolicy : seq of AccessRule := [];
 
 		
 	-- O que o log precisa no minimo, fazer um print aceitável disto
@@ -53,51 +52,28 @@ operations
 	
 	public findRuleApplicable: User * Facility * Date ==> AccessRule`AccessEvent
 		findRuleApplicable(u, f, d) == (
-		--		dcl t : seq of AccessRule;
+				dcl t : seq of AccessRule;
 				dcl ret :  AccessRule`AccessEvent;
-		--		t := filterWithUser(u);
-							resulList := [];
-			setList := accessPolicy;
-			filterByUserList(u, setList, resulList);
-			setList := resulList;
-			resulList := [];
-			filterByFacilityList(f, setList, resulList);
-				
+				t := filterWithUser(u, f);
 				--percorre sequencia de rules e vê se a constricao temporal pinta, pode ser interrompido para analisar a lista de exceções da regra
 				-- primeiro. Apartir do momento em que tem um true faz ret := r.accessEvent break.
 				-- r.evaluateExceptionList(u, f, d)??
 				return ret
 		);
 		
---public organizeByPriority: seq of AccessRule ==> ()
---	organizeByPriority(resulL) == ();
+	public filterWithUser: User * Facility ==> seq of AccessRule
+		filterWithUser(u, f) == (
+			dcl t : seq of AccessRule:= filterWithFacility(f);
+			dcl ret : seq of AccessRule := [];--vai receber as regras do grupo de seq  -- quando user = user da rule. ou user dentro dos grupos do user
+			
+			return ret
+		);
 		
-		public filterByUserList: User * seq of AccessRule * seq of AccessRule ==> () --|seq of AccessRule 
-			filterByUserList(u, setL, resulL) == (
-			dcl a: AccessRule;
-			resulList := resulL; 
-			setList := setL;
-				if(setList <> [])
-					then 
-					if(a.searchUserInTarget(u))
-					then resulList := resulList ^ [a];
-					setList := tl setList;
-					filterByUserList(u, setList, resulList);
-				);
-		
-		
-		public filterByFacilityList: Facility * seq of AccessRule * seq of AccessRule ==> ()
-			filterByFacilityList(f, setL, resulL) == (
-			dcl a: AccessRule;
-			resulList := resulL; 
-			setList := setL;
-				if(setList <> [])
-					then 
-					if(a.searchFacilityInTarget(f))
-					then resulList := resulList ^ [a];
-					setList := tl setList;
-					filterByFacilityList(f, setList, resulList);
-				);
+		public filterWithFacility: Facility ==> seq of AccessRule
+			filterWithFacility(f) == (
+			dcl s : seq of AccessRule := AccessPolicy;
+			return s  
+			);
 
 functions
 

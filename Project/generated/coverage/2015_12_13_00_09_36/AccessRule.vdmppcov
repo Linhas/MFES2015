@@ -24,7 +24,7 @@ instance variables
 	public accessEve : AccessEvent := <ThatIDoNotKnow>;
 	public dateBegin : Date := new Date(0,0,0);
 	public dateEnd : Date:= new Date(0,0,0);
-	public priority : nat;
+	
 	public temporalConstraint : bool := false;
 
 
@@ -35,53 +35,28 @@ operations
 -- E isto e tudo indispensavel
 		
 --public AccessRule: (User|User`userGroup) * (Facility|seq of char) ==> ()
-public AccessRule: set of User * set of Facility * AccessEvent * nat ==> AccessRule
-	AccessRule(u,f,a, pri) ==(
+public AccessRule: set of User * set of Facility * AccessEvent ==> AccessRule
+	AccessRule(u,f,a) ==(
 	userTarget := u;
 	facilityTarget := f;
 	accessEve := a;
-	priority := pri;
 	return self
 	);
 	
-public AccessRule: set of User * set of Facility * Date * Date * AccessEvent * nat ==> AccessRule
-	AccessRule(u,f, d1, d2, a, pri) ==(
+public AccessRule: set of User * set of Facility * Date * Date * AccessEvent ==> AccessRule
+	AccessRule(u,f, d1, d2, a) ==(
 	userTarget := u;
 	facilityTarget := f;
 	accessEve := a;
 	dateBegin := d1;
 	dateEnd := d2;
-	priority := pri;
 	temporalConstraint := true;
 	return self
 	);
-
-public getUserTarget: () ==> set of User 
-	getUserTarget() ==(
-	return userTarget;
-	);
 	
-public searchUserInTarget: User ==> bool
-	searchUserInTarget(u) == (
-		if (u in set userTarget)
-			then return true
-			else return false
-	);
-	
-public getPriority: () ==> nat
-	getPriority() == (
-	return priority
-	);
-	
-public searchFacilityInTarget: Facility ==> bool
-	searchFacilityInTarget(f) ==(
-		if(f in set facilityTarget)
-			then return true
-			else return false
-	);
 --	public addExceptions;
--- ADD USER / FACILITY TO RULE
--- REMOVE USER / FACILITY FROM RULE
+
+
 
 --TAMBEM NÃO ACHO QUE SEJA AQUI. O MAIS PROVAVEL É QUE SEJA ONDE FIZERMOS A DECISÃO 
 -- Compara a Hora de abertura e hora de fecho com data actual. Se 
