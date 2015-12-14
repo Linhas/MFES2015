@@ -103,8 +103,7 @@ operations
 			assertEqual("Darth Vader", card1.getUserOfCard().getName());
 		
 			);
-
-public testPhySystem: () ==> ()
+			public testPhySystem: () ==> ()
 			testPhySystem() == (
 			dcl currentDate: Date := new Date(26, 12, 2016, "Monday", 9, 30);
 			dcl expdate2: Date := new Date(20, 12, 2017);
@@ -121,8 +120,8 @@ public testPhySystem: () ==> ()
 		dcl c: Facility := new Facility("RCOM");
 		
 		dcl sys: PhyAccControlSystem := new PhyAccControlSystem(currentDate);
-		sys.createRule({ug}, {f}, <EnterMountDoom>, 12);
-		assertTrue(sys.requestAccess(card2,f)); 
+		sys.createRule({ug}, {a}, <EnterMountDoom>, 12);
+		assertTrue(sys.requestAccess(card3,b)); 
 		
 		f.addSectionFacility(a);
 		f.addSectionFacility(b);
@@ -146,8 +145,7 @@ public testPhySystem: () ==> ()
 			testUser();
 			testFacility();
 			testAccessCard();
-	--		testPhySystem();
-			
+			testAccessCard();
 			);	 
 			
 end TestPACS

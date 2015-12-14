@@ -40,7 +40,7 @@ operations
 	public PhyAccControlSystem : Date ==> PhyAccControlSystem
 		PhyAccControlSystem(d) == (
 		currentDate := d;
-		--	return self
+			return self
 		);
 		-- Makes request sentence
 	public requestAccess: AccessCard * Facility ==> bool
@@ -134,17 +134,6 @@ operations
 					filterByFacilityList(f, setList, resulList);
 				);
 
-	public createRule: set of User * set of Facility * AccessRule`AccessEvent * nat ==> ()
-		createRule(u,f,ae,id) == (
-		dcl r : AccessRule := new AccessRule(u,f,ae,id);
-		accessPolicy :=  [r] ^ accessPolicy;
-		);
-	public createRule: set of User * set of Facility * Date * Date * AccessRule`AccessEvent * nat ==> ()
-		createRule(u,f,d1,d2,ae,id) == (
-		dcl r : AccessRule := new AccessRule(u,f,d1,d2,ae,id);
-		accessPolicy :=  [r] ^ accessPolicy;
-		);
-			
 functions
 
 traces

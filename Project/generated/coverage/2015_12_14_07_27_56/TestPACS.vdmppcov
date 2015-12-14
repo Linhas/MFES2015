@@ -146,7 +146,7 @@ public testPhySystem: () ==> ()
 			testUser();
 			testFacility();
 			testAccessCard();
-	--		testPhySystem();
+			testPhySystem();
 			
 			);	 
 			

@@ -33,7 +33,7 @@ inv hour <24 and hour >= 0 and minute < 60 and minute >= 0;
 		
 	operations
  -- constructor, initializes the Date in format Day, Month, Year ==> for expiration Date in Card
-	public Date : nat * nat * nat ==> Date
+	public Date : nat1 * nat1 * nat ==> Date
 		Date(d, m, y) == (
 				day := d;
 				month := m;
@@ -42,7 +42,7 @@ inv hour <24 and hour >= 0 and minute < 60 and minute >= 0;
 		);
 		
  -- constructor, initializes the Date in format Day, Month, Year, dayOfTheWeek, hour, minutes ==> for currentDate, and for temporalConstraint
-		public Date : nat * nat * nat * seq1 of char* nat * nat ==> Date
+		public Date : nat1 * nat1 * nat * seq1 of char* nat * nat ==> Date
 		Date(d, m, y, nd, h, min) == (
 				day := d;
 				month := m;

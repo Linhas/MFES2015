@@ -103,8 +103,7 @@ operations
 			assertEqual("Darth Vader", card1.getUserOfCard().getName());
 		
 			);
-
-public testPhySystem: () ==> ()
+			public testPhySystem: () ==> ()
 			testPhySystem() == (
 			dcl currentDate: Date := new Date(26, 12, 2016, "Monday", 9, 30);
 			dcl expdate2: Date := new Date(20, 12, 2017);
@@ -146,8 +145,7 @@ public testPhySystem: () ==> ()
 			testUser();
 			testFacility();
 			testAccessCard();
-	--		testPhySystem();
-			
+			testAccessCard();
 			);	 
 			
 end TestPACS
