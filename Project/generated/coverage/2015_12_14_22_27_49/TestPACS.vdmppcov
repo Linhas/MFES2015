@@ -82,7 +82,7 @@ operations
 			dcl ug: User := new User("Padme");
 			dcl ul: User := new User("Darth Vader");
 			
-			dcl card1: AccessCard := new AccessCard (u, expdate1);
+			dcl card1: AccessCard := new AccessCard(u, expdate1);
 			dcl card2: AccessCard := new AccessCard(ug);
 			dcl card3: AccessCard := new AccessCard(ul, expdate2);
 			
@@ -92,6 +92,8 @@ operations
 
 			assertEqual("Anakin", card1.getUserOfCard().getName());
 		
+			assertEqual(1,card2.getIdCardOfUser());
+			
 			card2.setExpirationDate(expdate1);
 			assertEqual(expdate1, card2.getExpirationDate());
 			assertTrue(card2.isExpired(currentDate));
@@ -106,14 +108,10 @@ operations
 
 public testPhySystem: () ==> ()
 			testPhySystem() == (
-			dcl currentDate: Date := new Date(26, 12, 2016, "Wednesday", 9, 30);
+			dcl currentDate: Date := new Date(26, 12, 2016, "Monday", 9, 30);
 			dcl expdate2: Date := new Date(20, 12, 2017);
 			dcl ug: User := new User("Padme");
 			dcl ul: User := new User("Darth Vader");
-			dcl dateTemporalRestraint1: Date := new Date("Tuesday", 9,30);
-			dcl dateTemporalRestraint2: Date := new Date("Friday", 19,00);
-			dcl christmas: Date := new Date(25, 12, 2016);
-			
 			
 			dcl card2: AccessCard := new AccessCard(ug);
 			dcl card3: AccessCard := new AccessCard(ul, expdate2);
@@ -125,24 +123,8 @@ public testPhySystem: () ==> ()
 		dcl c: Facility := new Facility("RCOM");
 		
 		dcl sys: PhyAccControlSystem := new PhyAccControlSystem(currentDate);
-		-- testa caso simples
-		assertEqual(0, sys.getSizeAccessPolicy());
-
-		sys.createRule({ug}, {a}, <YouShallNotPass> , 12);
-		assertFalse(sys.requestAccess(card2,a)); 
-		sys.createRule({ug}, {a}, <EnterMountDoom> , 11);
-		assertTrue(sys.requestAccess(card2,a)); 
-
-		--com restricao de tempo, para uma data que se repete
-		sys.createRule({ul}, {a}, <YouShallNotPass> , 13);
-		sys.createRule({ul}, {a},  dateTemporalRestraint1, dateTemporalRestraint2, <EnterMountDoom> ,10);
-		assertTrue(sys.requestAccess(card3,a)); 
-				
-		--com restricao de tempo, para um dia unico
-		sys.createRule({ul}, {f}, christmas, <YouShallNotPass> , 9);
-		sys.changeCurrentDate(christmas);
-		assertFalse(sys.requestAccess(card3,a)); 
-
+		sys.createRule({ug}, {f}, <EnterMountDoom>, 12);
+		assertTrue(sys.requestAccess(card2,f)); 
 		
 		f.addSectionFacility(a);
 		f.addSectionFacility(b);
@@ -151,6 +133,9 @@ public testPhySystem: () ==> ()
 		
 		f.addFacilityToGroup("Department");
 		
+		
+			
+
 		
 			);
 			
@@ -163,7 +148,7 @@ public testPhySystem: () ==> ()
 			testUser();
 			testFacility();
 			testAccessCard();
-			testPhySystem();
+	--		testPhySystem();
 			
 			);	 
 			

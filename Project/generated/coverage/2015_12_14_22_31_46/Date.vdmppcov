@@ -1,0 +1,111 @@
+class Date
+types
+
+
+--public NameDay :: <Monday> | <Tuesday> | <Wednesday> | <Thursday>| <Friday>| <Saturday>| <Sunday>;
+
+values
+ public nameDays : set of (seq1 of char) = { "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
+ --public nameDays = [ <Monday>,<Tuesday>,<Wednesday>,<Thursday>,<Friday>,<Saturday>,<Sunday>]
+instance variables
+	public day : nat;
+	public month : nat;
+	public year : nat;
+	
+	public hour : nat := 0;
+	public minute : nat := 0;
+	
+--	public idweekDays : set of nat := {0,1,2,3,4,5,6};
+
+--	public idtonameDays : map set of nat to set of (seq1 of char) := {idweekDays |-> nameDays};
+	
+	public nameDay : seq1 of char := "-";
+	public weekDayId : nat;
+
+inv day <= 31 and
+		(year >= 1900 or year = 0) and
+		month <= 12 and
+		if month in set {4, 6, 9, 11}
+		then day <= 30
+		else (month = 2) => (day <=29);
+		
+inv hour <24 and hour >= 0 and minute < 60 and minute >= 0;
+		
+	operations
+ -- constructor, initializes the Date in format Day, Month, Year ==> for expiration Date in Card
+	public Date : nat * nat * nat ==> Date
+		Date(d, m, y) == (
+				day := d;
+				month := m;
+				year := y;
+				return self
+		);
+		
+		public Date : char * char * char ==> Date
+		Date(d, m, y) == (
+				day := 0;
+				month := 0;
+				year := 0;
+				return self
+		);
+		
+		public Date : seq1 of char* nat * nat ==> Date
+		Date(nd, h, min) == (
+				day := 0;
+				month := 0;
+				year := 0;
+				
+				hour := h;
+				minute := min;
+
+				if nd in set nameDays
+				then nameDay := nd;
+				
+				weekDayId := getNameDayId();
+						
+				return self
+		);
+		
+ -- constructor, initializes the Date in format Day, Month, Year, dayOfTheWeek, hour, minutes ==> for currentDate, and for temporalConstraint
+		public Date : nat * nat * nat * seq1 of char* nat * nat ==> Date
+		Date(d, m, y, nd, h, min) == (
+				day := d;
+				month := m;
+				year := y;
+				
+				hour := h;
+				minute := min;
+
+				if nd in set nameDays
+				then nameDay := nd;
+				
+				weekDayId := getNameDayId();
+						
+				return self
+		);
+
+
+		public getNameDay : () ==>  seq1 of char
+			getNameDay() ==( 
+			return nameDay
+			);
+		
+		public getNameDayId : () ==> nat
+			getNameDayId() == (
+			
+			if nameDay = "Monday" then weekDayId := 1 else 
+				if nameDay = "Tuesday" then weekDayId := 2 else 
+					if nameDay = "Wednesday" then weekDayId := 3 else 
+						if nameDay = "Thursday" then weekDayId := 4 else 
+							if nameDay = "Friday" then weekDayId := 5 else 
+								if nameDay = "Saturday" then weekDayId := 6 else 
+									if nameDay = "Sunday" then weekDayId := 7
+									else weekDayId := 0; 
+			
+			return weekDayId
+			);		
+			
+
+functions
+
+end Date

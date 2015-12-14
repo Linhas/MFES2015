@@ -55,11 +55,6 @@ operations
 		getUserOfCard() ==(
 		return userObj
 		);
-		
-	public getIdCardOfUser :() ==> nat1
-		getIdCardOfUser() ==(
-		return cardId
-		);
 
  public changeUserofCard : User ==> ()
  	changeUserofCard(u) == (

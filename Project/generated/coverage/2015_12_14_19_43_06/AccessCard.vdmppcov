@@ -6,8 +6,8 @@ values
 instance variables
 		private expirationDate: [Date] := nil; 
 		private userObj : User;
-		static private countId : nat1 := 1;
-		private cardId : nat1;
+		static private countId : nat := 1;
+		private cardId : nat;
 		private tempCard: bool;
 		
 		
@@ -21,7 +21,7 @@ operations
   tempCard := false;
   return self
   )
-  post countId = cardId + 1;
+  post countId = countId + 1;
   
   public AccessCard : User * Date ==> AccessCard 
   AccessCard(u, expD) == (
@@ -32,7 +32,7 @@ operations
   setExpirationDate(expD);
   return self
   )
-  post countId = cardId + 1;
+  post countId = countId + 1;
   
   public setExpirationDate: Date ==> ()
   	setExpirationDate(dt) == (
@@ -54,11 +54,6 @@ operations
 	public getUserOfCard :() ==> User
 		getUserOfCard() ==(
 		return userObj
-		);
-		
-	public getIdCardOfUser :() ==> nat1
-		getIdCardOfUser() ==(
-		return cardId
 		);
 
  public changeUserofCard : User ==> ()
