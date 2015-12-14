@@ -1,0 +1,151 @@
+class TestPACS is subclass of GeneralTestCases
+
+operations
+--Tests For Date
+--Faltam testes relacionados com o dia de semana por exemplo
+  public testDate: () ==> ()
+	  testDate() == (
+	  	dcl p: Date := new Date(20, 12, 2016);
+	  	dcl l: Date := new Date(26, 12, 2016, "Monday", 9, 30);
+	  	
+	  	assertEqual(20, p.day);
+	  	assertEqual(12, p.month);
+	  	assertEqual(2016, p.year);
+	  	
+	  	
+	  	assertEqual(26, l.day);
+	  	assertEqual(12, l.month);
+	  	assertEqual(2016, l.year);
+	  	assertEqual("Monday", l.getNameDay());
+	  	assertEqual(1, l.getNameDayId());
+	  	assertEqual(0, p.getNameDayId());
+	  	assertEqual(9, l.hour);
+	  	assertEqual(30, l.minute);
+
+	  );
+	  
+--Tests For User
+	public testUser: () ==> ()
+		testUser() == (
+		dcl u: User := new User("Anna");
+		dcl us: User := new User("MecStudent");
+		dcl ua: User := new User("InfStudent");
+		dcl usq : User := new User("Student");
+		
+		u.addGroupToUser(us);
+		us.addGroupToUser(usq);
+		
+		assertEqual("Anna", u.getName());
+		assertTrue(u.searchGroupInUser(us));
+		assertFalse(u.searchGroupInUser(ua));
+		u.removeGroupFromUser(us);
+		assertFalse(u.searchGroupInUser(us));
+		--assertTrue(u.searchGroupInUser(usq));
+		
+		);
+		
+	--Tests For Facility
+	public testFacility: () ==> ()
+		testFacility() == (
+		dcl f: Facility := new Facility("DEI");
+		dcl f2: Facility := new Facility("DEE");
+		
+		dcl a: Facility := new Facility("wc");
+		dcl b: Facility := new Facility("I003");
+		dcl c: Facility := new Facility("RCOM");
+		
+		f.addSectionFacility(a);
+		f.addSectionFacility(b);
+		f.addSectionFacility(c);
+		
+		f2.addSectionFacility(a);
+		
+		f.addFacilityToGroup("Department");
+		f2.addFacilityToGroup("Department");
+		
+		assertTrue(f.searchSectionInFacility(a));
+		assertFalse(f2.searchSectionInFacility(b));
+		
+		assertTrue(f.searchGroupInFacility("Department"));
+		assertFalse(f.searchGroupInFacility("Outside"));
+			
+		);
+		
+		--Tests for AccessCard
+		--um expirado, um sem expiração que depois ganha expiração, um não expirado
+		public testAccessCard: () ==> ()
+			testAccessCard() == (
+			dcl currentDate: Date := new Date(26, 12, 2016, "Monday", 9, 30);
+			dcl expdate1: Date := new Date(20, 12, 2016);
+			dcl expdate2: Date := new Date(20, 12, 2017);
+			dcl u: User := new User("Anakin");
+			dcl ug: User := new User("Padme");
+			dcl ul: User := new User("Darth Vader");
+			
+			dcl card1: AccessCard := new AccessCard(12, u, expdate1);
+			dcl card2: AccessCard := new AccessCard(13, ug);
+			dcl card3: AccessCard := new AccessCard(15, ul, expdate2);
+			
+			assertTrue(card1.isExpired(currentDate));
+			assertFalse(card2.isExpired(currentDate));
+			assertFalse(card3.isExpired(currentDate));
+
+			assertEqual("Anakin", card1.getUserOfCard().getName());
+		
+			card2.setExpirationDate(expdate1);
+			assertEqual(expdate1, card2.getExpirationDate());
+			assertTrue(card2.isExpired(currentDate));
+			
+			card1.removeExpDate();						
+			assertFalse(card1.isExpired(currentDate));
+			
+			card1.changeUserofCard(ul);
+			assertEqual("Darth Vader", card1.getUserOfCard().getName());
+		
+			);
+
+public testPhySystem: () ==> ()
+			testPhySystem() == (
+			dcl currentDate: Date := new Date(26, 12, 2016, "Monday", 9, 30);
+			dcl expdate2: Date := new Date(20, 12, 2017);
+			dcl ug: User := new User("Padme");
+			dcl ul: User := new User("Darth Vader");
+			
+			dcl card2: AccessCard := new AccessCard(13, ug);
+			dcl card3: AccessCard := new AccessCard(15, ul, expdate2);
+			
+		dcl f: Facility := new Facility("DEI");
+		
+		dcl a: Facility := new Facility("wc");
+		dcl b: Facility := new Facility("I003");
+		dcl c: Facility := new Facility("RCOM");
+		
+		dcl sys: PhyAccControlSystem := new PhyAccControlSystem(currentDate);
+		sys.createRule({ug}, {f}, <EnterMountDoom> , 12);
+		assertEqual(2, sys.getSizeAccessPolicy());
+		assertTrue(sys.requestAccess(card2,f)); 
+		
+		f.addSectionFacility(a);
+		f.addSectionFacility(b);
+		f.addSectionFacility(c);
+		
+		
+		f.addFacilityToGroup("Department");
+		
+		
+			);
+			
+		
+			
+	-- TestAll like the name indicates, tests all tests and buuuurns (mainly to check code coverage
+		public testAll: () ==> ()
+			testAll() == (
+			testDate();
+			testUser();
+			testFacility();
+			testAccessCard();
+			testPhySystem();
+			
+			);	 
+			
+end TestPACS

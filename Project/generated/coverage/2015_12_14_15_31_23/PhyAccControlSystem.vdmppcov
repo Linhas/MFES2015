@@ -1,0 +1,154 @@
+class PhyAccControlSystem
+/*
+  Contains the core model of the Physical Access Control System.
+  Defines the variables and the operations available to the Control System Operator.
+  FEUP, MFES, 2015/16.
+*/
+types
+--Change to DenyAccess, Authorized, Indeterminate
+AccessEvent = <YouShallNotPass> | <EnterMountDoom> | <ThatIDoNotKnow>;
+
+--VAI HAVER AQUI CREATES QUE VAO MANDAR CENAS SEREM ATUALIZADAS A SEQUENCIAS. TALVEZ.
+-- Tambem vai haver outra cena, mas agora nao me lembro o que.
+values
+
+instance variables
+	public resulList : seq of AccessRule := [];
+	public setList : seq of AccessRule := [];
+	public currentDate : Date;
+	
+	public x: nat;
+	public y: nat;
+	--private PolicyEntryPoints: map String to set of Rule := {|->};
+	
+	-- precisamos de todos os users para aceder a um em particular, cria-se um user, vê-se já existe
+	private usersList: set of User := { };
+	
+	--precisamos do allCards para guardar todos, para encontrar um user e etc
+	private allCards: set of AccessCard := {};
+	
+	--facto: o set of access rules e uma access policy 
+	public accessPolicy : seq of AccessRule := [];
+
+		
+	-- O que o log precisa no minimo, fazer um print aceitável disto
+	private log : seq of (set of (Facility * AccessCard * Date)) := [];
+	
+	
+operations
+
+	public PhyAccControlSystem : Date ==> PhyAccControlSystem
+		PhyAccControlSystem(d) == (
+		currentDate := d;
+		--	return self
+		);
+		-- Makes request sentence
+	public requestAccess: AccessCard * Facility ==> bool
+		requestAccess(c,f) ==(
+			dcl enter : bool;
+			dcl l :  AccessRule`AccessEvent;
+			l :=  findRuleApplicable(c.getUserOfCard(), f, currentDate);
+			if l = <ThatIDoNotKnow> or l = <YouShallNotPass>   then  enter:= false
+			else if l = <EnterMountDoom> then  enter:= false;
+			
+			return enter;
+		); 	
+	
+	public findRuleApplicable: User * Facility * Date ==> AccessRule`AccessEvent
+		findRuleApplicable(u, f, d) == (
+		--		dcl t : seq of AccessRule;
+			dcl rule : AccessRule;
+			dcl ret :  AccessRule`AccessEvent;
+		--		t := filterWithUser(u);
+							resulList := [];
+			setList := accessPolicy;
+			filterByUserList(u, setList, resulList);
+			setList := resulList;
+			resulList := [];
+			filterByFacilityList(f, setList, resulList);
+			y := len resulList;
+			x := 0;
+			orderByPermission();
+		--	rule := findRuleOnTime(d);
+			rule := hd resulList;
+		--	if rule = []
+			--	then ret := <ThatIDoNotKnow>
+				--else	
+			ret := rule.accessEve;
+
+			return ret
+		);
+		
+
+			
+		orderByPermission: () ==> ()
+		orderByPermission () ==
+			while x < y  do
+			|| (BubbleMax());
+			
+	BubbleMax : () ==> ()
+	BubbleMax () ==
+		(	dcl z : nat := x;
+			dcl m:nat := resulList(z).getPriority();
+			--find max val in l(x...y)
+			for i = x to y do
+				if resulList(i).getPriority() > m 
+				then (m := resulList(i).getPriority();
+						z:= i);
+						
+				--move max val to index y
+						(dcl temp: AccessRule;
+						temp := resulList(y);
+						resulList(y) := resulList(z);
+						resulList(z) := temp;
+						y := y-1));
+						
+		
+--public organizeByPriority: seq of AccessRule ==> ()
+--	organizeByPriority(resulL) == ();
+		
+		public filterByUserList: User * seq of AccessRule * seq of AccessRule ==> () --|seq of AccessRule 
+			filterByUserList(u, setL, resulL) == (
+			dcl a: AccessRule;
+			resulList := resulL; 
+			setList := setL;
+				if(setList <> [])
+					then (
+					a := hd setList;
+					if(a.searchUserInTarget(u))
+					then resulList := resulList ^ [a];
+					setList := tl setList;
+					filterByUserList(u, setList, resulList);)
+				);
+		
+		
+		public filterByFacilityList: Facility * seq of AccessRule * seq of AccessRule ==> ()
+			filterByFacilityList(f, setL, resulL) == (
+			dcl a: AccessRule;
+			resulList := resulL; 
+			setList := setL;
+				if(setList <> [])
+					then (
+					a := hd setList;
+					if(a.searchFacilityInTarget(f))
+					then resulList := resulList ^ [a];
+					setList := tl setList;
+					filterByFacilityList(f, setList, resulList);)
+				);
+
+	public createRule: set of User * set of Facility * AccessRule`AccessEvent * nat ==> ()
+		createRule(u,f,ae,id) == (
+		dcl r : AccessRule := new AccessRule(u,f,ae,id);
+		accessPolicy :=  [r] ^ accessPolicy;
+		);
+	public createRule: set of User * set of Facility * Date * Date * AccessRule`AccessEvent * nat ==> ()
+		createRule(u,f,d1,d2,ae,id) == (
+		dcl r : AccessRule := new AccessRule(u,f,d1,d2,ae,id);
+		accessPolicy :=  [r] ^ accessPolicy;
+		);
+			
+functions
+
+traces
+-- TODO Define Combinatorial Test Traces here
+end PhyAccControlSystem

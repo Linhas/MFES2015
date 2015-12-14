@@ -1,0 +1,75 @@
+class AccessCard
+types
+
+values
+-- NAO ESQUECER DE FAZER UMA VERIFICAÇAO QUANDO TIVER A CRIAR UM CARTAO SE O ID JA EXISTE.
+instance variables
+		private expirationDate: [Date] := nil; 
+		private userObj : User;
+		private cardId : nat;
+		private tempCard: bool;
+		
+		
+operations
+--não esquecer de fazer a verificação se o id é permitido no PhyAccControlSystem
+  public AccessCard : nat * User ==> AccessCard
+  AccessCard(idC, u) == (
+  cardId := idC;
+  userObj := u;
+  tempCard := false;
+  return self
+  );
+  
+  public AccessCard : nat * User * Date ==> AccessCard 
+  AccessCard(idC, u, expD) == (
+  cardId := idC;
+  userObj := u;
+  tempCard := true;
+  setExpirationDate(expD);
+  return self
+  );
+  
+  public setExpirationDate: Date ==> ()
+  	setExpirationDate(dt) == (
+  	 tempCard := true;
+  	expirationDate := dt;
+  	);
+  	
+  public removeExpDate: () ==> ()
+  	removeExpDate() == (
+  	expirationDate := nil;
+  	tempCard := false;
+  	);
+  	
+  public getExpirationDate: () ==> Date
+  	getExpirationDate() == (
+  	return expirationDate
+  	);
+  	
+	public getUserOfCard :() ==> User
+		getUserOfCard() ==(
+		return userObj
+		);
+
+ public changeUserofCard : User ==> ()
+ 	changeUserofCard(u) == (
+  userObj := u
+  );
+  
+  public isExpired : Date ==> bool
+		isExpired(currentDate) == (
+		if (tempCard) then
+			if ((currentDate.year > expirationDate.year)or
+				(currentDate.year = expirationDate.year and currentDate.month > expirationDate.month) or
+					currentDate.year = expirationDate.year and currentDate.month = expirationDate.month and
+					currentDate.day > expirationDate.day)
+					then return true
+				else return false
+			else return false
+		);
+  
+functions
+
+traces
+
+end AccessCard
