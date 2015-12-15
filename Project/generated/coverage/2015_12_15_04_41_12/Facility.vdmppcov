@@ -1,0 +1,50 @@
+class Facility
+types
+ 		public facilityName = seq1 of char;
+values
+-- TODO Define values here
+instance variables
+	private name: facilityName;
+	public facilityGroup : set of (seq of char) := { };
+	private sectionInFacility : set of Facility := { };
+operations
+	public Facility : seq1 of char ==> Facility
+		Facility(fn) == (
+			name := fn;
+			return self
+		)
+		pre fn <> "";
+	
+	public addSectionFacility : Facility ==> ()
+		addSectionFacility(fac) == (
+		if not fac in set sectionInFacility 
+		then sectionInFacility := sectionInFacility union {fac} 
+		);
+		
+	public addFacilityToGroup : seq of char ==> ()
+		addFacilityToGroup(gn) == (
+		if not gn in set facilityGroup 
+		then facilityGroup := facilityGroup union {gn} 
+		)
+		pre gn <> "";
+		
+	public searchSectionInFacility : Facility ==> bool
+		searchSectionInFacility(fac) == (
+		 if fac in set sectionInFacility
+		 	then return true
+		 	else return false
+		);
+	
+	public searchGroupInFacility : seq of char ==> bool
+		searchGroupInFacility(fac) == (
+		 if fac in set facilityGroup
+		 	then return true
+		 	else return false
+		)
+		pre fac <> "";
+		
+functions
+-- TODO Define functiones here
+traces
+-- TODO Define Combinatorial Test Traces here
+end Facility

@@ -1,0 +1,130 @@
+class Date
+types
+
+
+--public NameDay :: <Monday> | <Tuesday> | <Wednesday> | <Thursday>| <Friday>| <Saturday>| <Sunday>;
+
+values
+ public nameDays : set of (seq1 of char) = { "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday", "Indefinite"};
+ public id : set of nat = {1,2,3,4,5,6,7,0};
+
+ --public nameDays = [ <Monday>,<Tuesday>,<Wednesday>,<Thursday>,<Friday>,<Saturday>,<Sunday>]
+instance variables
+	public day : nat;
+	public month : nat;
+	public year : nat;
+	
+	public hour : nat := 0;
+	public minute : nat := 0;
+	
+--	public idweekDays : set of nat := {0,1,2,3,4,5,6};
+
+--	public idtonameDays : map set of nat to set of (seq1 of char) := {idweekDays |-> nameDays};
+	
+	public nameDay : seq1 of char := "-";
+	public weekDayId : nat;
+ 	public idNameDays : map nat to seq1 of char :=  {1 |-> "Monday", 2 |-> "Tuesday", 3 |-> "Wednesday", 4 |-> "Thursday", 5 |-> "Friday", 6 |-> "Saturday", 7 |-> "Sunday", 0 |-> "Indefinite"};
+
+inv day <= 31 and
+		(year >= 1900 or year = 0) and
+		month <= 12 and
+		if month in set {4, 6, 9, 11}
+		then day <= 30
+		else (month = 2) => (day <=29);
+		
+inv hour <24 and hour >= 0 and minute < 60 and minute >= 0;
+		
+	operations
+ -- constructor, initializes the Date in format Day, Month, Year ==> for expiration Date in Card
+	public Date : nat * nat * nat ==> Date
+		Date(d, m, y) == (		
+				day := d;
+				month := m;
+				year := y;
+				return self
+		)
+		pre d <= 31 and m <= 12 and y >= 0;
+		
+		public Date : seq1 of char* nat * nat ==> Date
+		Date(nd, h, min) == (
+				day := 0;
+				month := 0;
+				year := 0;
+				
+				hour := h;
+				minute := min;
+
+				if nd in set nameDays
+				then nameDay := nd;
+				
+				weekDayId := getNameDayId();
+						
+				return self
+		)
+		pre h >= 0 and h < 24 and min >= 0 and min < 60;
+ -- constructor, initializes the Date in format Day, Month, Year, dayOfTheWeek, hour, minutes ==> for currentDate, and for temporalConstraint
+		public Date : nat * nat * nat * seq1 of char* nat * nat ==> Date
+		Date(d, m, y, nd, h, min) == (
+				day := d;
+				month := m;
+				year := y;
+				
+				hour := h;
+				minute := min;
+
+				if nd in set nameDays
+				then nameDay := nd;
+				
+				weekDayId := getNameDayId();
+						
+				return self
+		)
+		pre d <= 31 and m <= 12 and y >= 0 and h >= 0 and h < 24 and min >= 0 and min < 60;
+
+
+		public getNameDay : () ==>  seq1 of char
+			getNameDay() ==( 
+			return nameDay
+			)
+			post nameDay in set nameDays;
+		
+		public getNameDayId : () ==> nat
+			getNameDayId() == (
+			dcl alo : map nat to seq1 of char ;
+		--	dcl ans : set of nat;
+			dcl num : nat:= 1;
+			dcl notFound : bool := true;
+			weekDayId := 0;
+			
+			alo := idNameDays :> {nameDay};
+	--		if alo <> {|->} then  ans := dom alo;
+			while (num < 8) do
+				(if(num in set dom alo)
+					then (weekDayId := num;
+								);
+					num := num +1);
+				
+	--		let x = {true|->5, 6|->{}} in idNameDays;
+			
+	--		{i |-> i | i in set idNameDays & rng i = nameDay }
+		--	weekDayId:= 0;
+			--if nameDay = "Monday" then weekDayId := 1 else 
+				--if nameDay = "Tuesday" then weekDayId := 2 else 
+					--if nameDay = "Wednesday" then weekDayId := 3 else 
+						--if nameDay = "Thursday" then weekDayId := 4 else 
+							--if nameDay = "Friday" then weekDayId := 5 else 
+								--if nameDay = "Saturday" then weekDayId := 6 else 
+									--if nameDay = "Sunday" then weekDayId := 7
+									--else weekDayId := 0;
+									
+		--	for all a in set rng idNameDays and a = nameDay do weekDayId := dom idNameDays;
+--	weekDayId = 
+			
+			return weekDayId
+			)
+			post weekDayId >= 0 and weekDayId <= 7;		
+			
+
+functions
+
+end Date

@@ -1,0 +1,26 @@
+class AccessLogInfo
+types
+-- TODO Define types here
+values
+-- TODO Define values here
+instance variables
+	public facility : Facility;
+	public accessCard : AccessCard;
+	public dateAccess : Date;
+	public enter :  bool;
+operations
+
+public AccessLogInfo:Facility * AccessCard * Date * bool ==> AccessLogInfo
+	AccessLogInfo(f,aC,d,ent) == (
+	facility:= f;
+	accessCard := aC;
+	dateAccess := d;
+	enter := ent;
+return self;
+	);
+
+functions
+-- TODO Define functiones here
+traces
+
+end AccessLogInfo
