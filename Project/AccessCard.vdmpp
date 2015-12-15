@@ -1,8 +1,11 @@
 class AccessCard
 types
-
+-- TODO Define types here
 values
+-- TODO Define values here
 instance variables
+-- TODO Define instance variables here
+
 		private expirationDate: [Date] := nil; 
 		private userObj : User;
 		static private countId : nat1 := 1;
@@ -11,6 +14,9 @@ instance variables
 		
 		
 operations
+-- TODO Define operations here
+
+-- AccessCard constructor, with User as argument, returs the AccessCard created
   public AccessCard : User ==> AccessCard
   AccessCard(u) == (
   cardId := countId;
@@ -20,7 +26,8 @@ operations
   return self
   )
   post countId = cardId + 1;
-  
+
+-- AccessCard constructor, with User and Date as arguments, returs the AccessCard created  
   public AccessCard : User * Date ==> AccessCard 
   AccessCard(u, expD) == (
    cardId := countId;
@@ -33,12 +40,14 @@ operations
   pre cardId <> 0
   post countId = cardId + 1;
   
+ -- Sets the card's expiration date, expiration date set to argument passed 
   public setExpirationDate: Date ==> ()
   	setExpirationDate(dt) == (
   	 tempCard := true;
   	expirationDate := dt;
   	);
   	
+ -- Removes the expiration date of a card
   public removeExpDate: () ==> ()
   	removeExpDate() == (
   	expirationDate := nil;
@@ -46,27 +55,32 @@ operations
   	)
   	post expirationDate = nil;
   	
+-- Returns the expiration date of a card
   public getExpirationDate: () ==> Date
   	getExpirationDate() == (
   	return expirationDate
   	);
   	
+-- Returns the assign user of a card
 	public getUserOfCard :() ==> User
 		getUserOfCard() ==(
 		return userObj
 		);
 		
+-- Returns the Id of a card
 	public getIdCardOfUser :() ==> nat1
 		getIdCardOfUser() ==(
 		return cardId
 		)
 		pre cardId <> 0;
-
+		
+-- Changes the user associated to a card
  public changeUserofCard : User ==> ()
  	changeUserofCard(u) == (
   userObj := u
   );
   
+-- Checks card validity
   public isExpired : Date ==> bool
 		isExpired(currentDate) == (
 		if (tempCard) then
