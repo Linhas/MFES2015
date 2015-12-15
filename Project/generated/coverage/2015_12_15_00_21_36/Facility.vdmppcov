@@ -43,6 +43,9 @@ operations
 		)
 		pre fac <> "";
 		
+		
+		public getLenght : () ==> nat
+		 getLenght() ==(return card sectionInFacility;);
 functions
 -- TODO Define functiones here
 traces
