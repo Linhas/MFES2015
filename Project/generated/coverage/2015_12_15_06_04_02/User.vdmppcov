@@ -5,10 +5,12 @@ class User
   FEUP, MFES, 2015/16.
 */
 types
+--A CENA DE NÃO TER ID É MAU. HÁ QUE FAZER ALGO EM RELAÇÃO A ISSO
 	
 values
 
 instance variables
+-- se calhar pôr um id aqui, para caso que dos users serem iguais
 	private name: seq1 of char;
 	public userGroup: set of User := { };
 

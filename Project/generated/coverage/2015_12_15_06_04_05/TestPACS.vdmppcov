@@ -143,15 +143,13 @@ public testPhySystem: () ==> ()
 		-- testa se cartão expirado
 		
 		assertFalse(sys.requestAccess(card1,a)); 
-		sys.createRule({ug, as}, {a}, <EnterMountDoom> , 13);
-		assertFalse(sys.requestAccess(card1,a));
-		assertTrue(sys.requestAccess(card2,a));
+		sys.createRule({ug, as}, {a}, <EnterMountDoom> , 11);
 		-- testa caso simples
 		sys.createRule({ug}, {a}, <YouShallNotPass> , 12);
-		 
-
-
 		assertFalse(sys.requestAccess(card2,a)); 
+	--	sys.createRule({ug}, {a}, <EnterMountDoom> , 11);
+
+		assertTrue(sys.requestAccess(card2,a)); 
 
 		--com restricao de tempo, para uma data que se repete
 		sys.createRule({ul}, {a}, <YouShallNotPass> , 13);
@@ -163,7 +161,7 @@ public testPhySystem: () ==> ()
 		assertTrue(sys.requestAccess(card3,a)); 
 		sys.changeCurrentDate(christmas);
 		assertFalse(sys.requestAccess(card3,a)); 
-		assertEqual(7, sys.sizeOfLog());		
+		assertEqual(5, sys.sizeOfLog());		
 			);
 			
 		

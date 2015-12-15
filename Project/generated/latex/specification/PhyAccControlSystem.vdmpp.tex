@@ -1,0 +1,229 @@
+\begin{vdmpp}[breaklines=true]
+class PhyAccControlSystem
+/*
+  Contains the core model of the Physical Access Control System.
+  Defines the variables and the operations available to the Control System Operator.
+  FEUP, MFES, 2015/16.
+*/
+types
+--Change to DenyAccess, Authorized, Indeterminate
+AccessEvent = <YouShallNotPass> | <EnterMountDoom> | <ThatIDoNotKnow>;
+
+
+
+values
+
+instance variables
+ public resulList : seq of AccessRule := [];
+ public setList : seq of AccessRule := [];
+ public currentDate : Date;
+ 
+ public x: nat := 1;
+ public y: nat := len resulList;
+ --private PolicyEntryPoints: map String to set of Rule := {|->};
+ 
+ -- precisamos de todos os users para aceder a um em particular, cria-se um user, vê-se já existe
+ private usersList: set of User := { };
+ 
+ --precisamos do allCards para guardar todos, para encontrar um user e etc
+ private allCards: set of AccessCard := {};
+ 
+ --facto: o set of access rules e uma access policy 
+ public accessPolicy : seq of AccessRule := [];
+
+  
+ -- O que o log precisa no minimo, fazer um print aceitável disto
+ private log : seq of AccessLogInfo := [];
+
+ 
+operations
+
+(*@
+\label{PhyAccControlSystem:40}
+@*)
+ public PhyAccControlSystem : Date ==> PhyAccControlSystem
+  PhyAccControlSystem(d) == (
+  currentDate := d;
+  -- return self
+  );
+  -- Makes request sentence
+(*@
+\label{requestAccess:46}
+@*)
+ public requestAccess: AccessCard * Facility ==> bool
+  requestAccess(c,f) ==(
+   dcl enter : bool;
+   dcl info : AccessLogInfo;
+   dcl l :  AccessRule`AccessEvent;
+   if c.AccessCard`isExpired(currentDate)
+    then enter := false
+    else (
+
+   l :=  findRuleApplicable(c.getUserOfCard(), f, currentDate);
+   if l = <ThatIDoNotKnow> or l = <YouShallNotPass>   then  enter:= false
+   else if l = <EnterMountDoom> then  enter:= true;);
+   info := new AccessLogInfo(f,c,currentDate, enter);
+(*@
+\label{sizeOfLog:59}
+@*)
+   log := [info] ^ log;
+   
+   return enter;
+  );  
+ public sizeOfLog : () ==> nat
+(*@
+\label{printLog:64}
+@*)
+  sizeOfLog() == (
+   return len log
+  );
+
+ public findRuleApplicable: User * Facility * Date ==> AccessRule`AccessEvent
+  findRuleApplicable(u, f, d) == (
+
+   dcl rule : AccessRule;
+   dcl ret :  AccessRule`AccessEvent;
+   resulList := [];
+   setList := accessPolicy;
+   filterByUserList(u, setList, resulList);
+   setList := resulList;
+   resulList := [];
+   filterByFacilityList(f, setList, resulList);
+   y := len resulList;
+   x := 1;
+   orderByPermission(); --permission mais baixa mais autoridade
+   setList := resulList;
+   resulList := [];
+   findRuleOnTime(d, setList, resulList); 
+  if(resulList = [])
+   then ret := <ThatIDoNotKnow>
+   else (rule := hd resulList;
+
+   ret := rule.accessEve;);
+
+(*@
+\label{findRuleApplicable:91}
+@*)
+   return ret
+  );
+  
+   public findRuleOnTime: Date * seq of AccessRule * seq of AccessRule ==> () --|seq of AccessRule 
+   findRuleOnTime(d, setL, resulL) == (
+    dcl a: AccessRule;
+    resulList := resulL; 
+    setList := setL;
+     if(setList <> [])
+      then (
+      a := hd setList;
+      if(a.isOnOpeningWeekDays(d) and a.isInTimeInterval(d))
+      then resulList := resulList ^ [a];
+      setList := tl setList;
+      findRuleOnTime(d, setList, resulList);)
+    );
+
+   
+  orderByPermission: () ==> ()
+  orderByPermission () ==
+   while x < y  do
+    (BubbleMax());
+   
+ BubbleMax : () ==> ()
+ BubbleMax () ==
+  ( dcl z : nat := x;
+(*@
+\label{findRuleOnTime:117}
+@*)
+   dcl m:nat := resulList(z).getPriority();
+   --find max val in l(x...y)
+   for i = x to y do
+    if resulList(i).getPriority() > m 
+    then (m := resulList(i).getPriority();
+      z:= i);
+      
+    --move max val to index y
+      (dcl temp: AccessRule;
+      temp := resulList(y);
+      resulList(y) := resulList(z);
+      resulList(z) := temp;
+      y := y-1));
+      
+  
+(*@
+\label{orderByPermission:132}
+@*)
+--public organizeByPriority: seq of AccessRule ==> ()
+-- organizeByPriority(resulL) == ();
+  
+  public filterByUserList: User * seq of AccessRule * seq of AccessRule ==> () --|seq of AccessRule 
+   filterByUserList(u, setL, resulL) == (
+(*@
+\label{BubbleMax:137}
+@*)
+   dcl a: AccessRule;
+   resulList := resulL; 
+   setList := setL;
+    if(setList <> [])
+     then (
+     a := hd setList;
+     if(a.searchUserInTarget(u))
+     then resulList := resulList ^ [a];
+     setList := tl setList;
+     filterByUserList(u, setList, resulList);)
+    );
+  
+  
+  public filterByFacilityList: Facility * seq of AccessRule * seq of AccessRule ==> ()
+   filterByFacilityList(f, setL, resulL) == (
+   dcl a: AccessRule;
+   resulList := resulL; 
+   setList := setL;
+    if(setList <> [])
+     then (
+     a := hd setList;
+(*@
+\label{filterByUserList:158}
+@*)
+     if(a.searchFacilityInTarget(f))
+     then resulList := resulList ^ [a];
+     setList := tl setList;
+     filterByFacilityList(f, setList, resulList);)
+    );
+
+ public createRule: set of User * set of Facility * AccessRule`AccessEvent * nat ==> ()
+  createRule(u,f,ae,id) == (
+  dcl r : AccessRule := new AccessRule(u,f,ae,id);
+  accessPolicy :=  [r] ^ accessPolicy;
+  );
+  
+ public createRule: set of User * set of Facility * Date * Date * AccessRule`AccessEvent * nat ==> ()
+  createRule(u,f,d1,d2,ae,id) == (
+  dcl r : AccessRule := new AccessRule(u,f,d1,d2,ae,id);
+(*@
+\label{filterByFacilityList:173}
+@*)
+  accessPolicy :=  [r] ^ accessPolicy;
+  );
+  
+  public createRule: set of User * set of Facility * Date * AccessRule`AccessEvent * nat ==> ()
+  createRule(u,f,d,ae,id) == (
+  dcl r : AccessRule := new AccessRule(u,f,d,ae,id);
+  accessPolicy :=  [r] ^ accessPolicy;
+  );
+  
+  public getSizeAccessPolicy: () ==> nat
+   getSizeAccessPolicy() == (
+   return len accessPolicy);
+  
+  public changeCurrentDate: Date ==> ()
+(*@
+\label{createRule:187}
+@*)
+   changeCurrentDate(d) ==(
+   currentDate := d;
+   );
+   
+functions
+
+traces
+end PhyAccControlSystem
+\end{vdmpp}

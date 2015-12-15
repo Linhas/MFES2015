@@ -109,7 +109,7 @@ operations
 		orderByPermission: () ==> ()
 		orderByPermission () ==
 			while x < y  do
-			 (BubbleMax());
+			|| (BubbleMax());
 			
 	BubbleMax : () ==> ()
 	BubbleMax () ==

@@ -14,7 +14,6 @@ operations
 	  	assertEqual(12, p.month);
 	  	assertEqual(2016, p.year);
 	  	assertEqual(27, fev.day);
-	  	assertEqual(4, an.month);
 	  	
 	  	
 	  	assertEqual(26, l.day);
@@ -115,17 +114,14 @@ operations
 public testPhySystem: () ==> ()
 			testPhySystem() == (
 			dcl currentDate: Date := new Date(26, 12, 2016, "Wednesday", 9, 30);
-			dcl expdate1: Date := new Date(20, 12, 2016);
 			dcl expdate2: Date := new Date(20, 12, 2017);
 			dcl ug: User := new User("Padme");
 			dcl ul: User := new User("Darth Vader");
-			dcl as: User := new User("Obi");
-			
 			dcl dateTemporalRestraint1: Date := new Date("Tuesday", 9,30);
 			dcl dateTemporalRestraint2: Date := new Date("Friday", 19,00);
 			dcl christmas: Date := new Date(25, 12, 2016);
 			
-			dcl card1: AccessCard := new AccessCard(as, expdate1);
+				
 			dcl card2: AccessCard := new AccessCard(ug);
 			dcl card3: AccessCard := new AccessCard(ul, expdate2);
 			
@@ -137,21 +133,14 @@ public testPhySystem: () ==> ()
 		dcl c: Facility := new Facility("RCOM");
 		
 		dcl sys: PhyAccControlSystem := new PhyAccControlSystem(currentDate);
-	
-		assertEqual(0, sys.getSizeAccessPolicy());
-		
-		-- testa se cartão expirado
-		
-		assertFalse(sys.requestAccess(card1,a)); 
-		sys.createRule({ug, as}, {a}, <EnterMountDoom> , 13);
-		assertFalse(sys.requestAccess(card1,a));
-		assertTrue(sys.requestAccess(card2,a));
 		-- testa caso simples
+		assertEqual(0, sys.getSizeAccessPolicy());
+
 		sys.createRule({ug}, {a}, <YouShallNotPass> , 12);
-		 
-
-
 		assertFalse(sys.requestAccess(card2,a)); 
+		sys.createRule({ug}, {a}, <EnterMountDoom> , 11);
+
+		assertTrue(sys.requestAccess(card2,a)); 
 
 		--com restricao de tempo, para uma data que se repete
 		sys.createRule({ul}, {a}, <YouShallNotPass> , 13);
@@ -163,7 +152,7 @@ public testPhySystem: () ==> ()
 		assertTrue(sys.requestAccess(card3,a)); 
 		sys.changeCurrentDate(christmas);
 		assertFalse(sys.requestAccess(card3,a)); 
-		assertEqual(7, sys.sizeOfLog());		
+		assertEqual(5, sys.sizeOfLog());		
 			);
 			
 		

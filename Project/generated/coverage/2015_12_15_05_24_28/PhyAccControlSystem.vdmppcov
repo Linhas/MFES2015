@@ -48,13 +48,9 @@ operations
 			dcl enter : bool;
 			dcl info : AccessLogInfo;
 			dcl l :  AccessRule`AccessEvent;
-			if c.AccessCard`isExpired(currentDate)
-				then enter := false
-				else (
-
 			l :=  findRuleApplicable(c.getUserOfCard(), f, currentDate);
 			if l = <ThatIDoNotKnow> or l = <YouShallNotPass>   then  enter:= false
-			else if l = <EnterMountDoom> then  enter:= true;);
+			else if l = <EnterMountDoom> then  enter:= true;
 			info := new AccessLogInfo(f,c,currentDate, enter);
 			log := [info] ^ log;
 			
@@ -109,7 +105,7 @@ operations
 		orderByPermission: () ==> ()
 		orderByPermission () ==
 			while x < y  do
-			 (BubbleMax());
+			|| (BubbleMax());
 			
 	BubbleMax : () ==> ()
 	BubbleMax () ==

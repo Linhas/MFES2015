@@ -1,0 +1,74 @@
+\begin{vdmpp}[breaklines=true]
+class User
+/*
+  Contains the core model related to the User Class.
+  Defines the variables and the operations available to the Control System Operator.
+  FEUP, MFES, 2015/16.
+*/
+types
+ 
+values
+
+instance variables
+ private name: seq1 of char;
+ public userGroup: set of User := { };
+
+operations
+ public User : seq1 of char ==> User
+  User(nm) == (
+(*@
+\label{User:18}
+@*)
+   name := nm;
+   userGroup := {};
+   return self
+  )
+  pre nm <> "";
+ 
+ public getName : () ==> seq1 of char
+   getName() == (
+(*@
+\label{getName:26}
+@*)
+   return name;
+   )
+   post name <> ""
+   ;
+  --Still has to search groups inside of user groups
+ public searchGroupInUser: User ==> bool
+  searchGroupInUser(ug) ==(
+(*@
+\label{searchGroupInUser:33}
+@*)
+  if ug in set userGroup
+  then return true
+  else return false
+  );
+  
+ public addGroupToUser : User ==> ()
+   addGroupToUser(u) == (
+(*@
+\label{addGroupToUser:40}
+@*)
+   if not u in set userGroup
+   then userGroup := userGroup union {u} 
+  );
+  
+  public removeGroupFromUser : User ==> ()
+   removeGroupFromUser(u) == (
+(*@
+\label{removeGroupFromUser:46}
+@*)
+   dcl tempSet : set of User := {};
+   tempSet := tempSet union {u};
+   if u in set userGroup
+   then userGroup := userGroup \ tempSet; 
+   -- removeUserGroup(u, userGroup);
+ );
+  
+functions
+
+traces
+-- TODO Define Combinatorial Test Traces here
+end User
+\end{vdmpp}

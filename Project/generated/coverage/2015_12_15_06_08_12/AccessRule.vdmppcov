@@ -1,0 +1,147 @@
+class AccessRule
+
+-- related to which Entry point
+-- affects which User
+-- 
+types
+
+
+
+public AccessEvent = <YouShallNotPass> | <EnterMountDoom> | <ThatIDoNotKnow>;
+
+public Target ::	users : set of User
+									facilities : set of Facility
+									timeRestriction : set of Date;
+									
+
+values
+-- TODO Define values here
+instance variables
+
+
+	public userTarget : set of User;
+	public facilityTarget : set of Facility;
+	public accessEve : AccessEvent := <ThatIDoNotKnow>;
+	public dateBegin : Date := new Date(0,0,0,"Indefinite", 0, 0);
+	public dateEnd : Date:= new Date(0,0,0,"Indefinite", 0, 0);
+	public priority : nat;
+	public temporalConstraint : bool := false;
+
+
+operations
+
+-- FALTA id que identifique a regra para poder incluir excecoes relativas a uma regra. 
+-- FALTA int de permissao. 
+-- E isto e tudo indispensavel
+		
+--public AccessRule: (User|User`userGroup) * (Facility|seq of char) ==> ()
+public AccessRule: set of User * set of Facility * AccessEvent * nat ==> AccessRule
+	AccessRule(u,f,a, pri) ==(
+	userTarget := u;
+	facilityTarget := f;
+	accessEve := a;
+	priority := pri;
+	return self
+	);
+	
+	public AccessRule: set of User * set of Facility *Date* AccessEvent * nat ==> AccessRule
+	AccessRule(u,f,d,a, pri) ==(
+	userTarget := u;
+	facilityTarget := f;
+	dateBegin := d;
+	dateEnd := d;
+	accessEve := a;
+	priority := pri;
+	return self
+	);
+	
+public AccessRule: set of User * set of Facility * Date * Date * AccessEvent * nat ==> AccessRule
+	AccessRule(u,f, d1, d2, a, pri) ==(
+	userTarget := u;
+	facilityTarget := f;
+	accessEve := a;
+	dateBegin := d1;
+	dateEnd := d2;
+	priority := pri;
+	temporalConstraint := true;
+	return self
+	);
+
+public getUserTarget: () ==> set of User 
+	getUserTarget() ==(
+	return userTarget;
+	);
+	
+public searchUserInTarget: User ==> bool
+	searchUserInTarget(u) == (
+		if (u in set userTarget)
+			then return true
+			else return false
+	);
+	
+public getPriority: () ==> nat
+	getPriority() == (
+	return priority
+	);
+	
+public searchFacilityInTarget: Facility ==> bool
+	searchFacilityInTarget(f) ==(
+		if(f in set facilityTarget)
+			then return true
+			else return false
+	);
+--	public addExceptions;
+-- ADD USER / FACILITY TO RULE
+-- REMOVE USER / FACILITY FROM RULE
+
+
+-- Compara o dia de semana de abertura e hora de fecho com a data actual. 
+-- Utiliza os Ids atribuidos aos dias de semana para o fazer, {Segunda,..,Domingo} e {1,...,7}. 
+-- Se dia de abertura tem um id > que id de fecho faz o complementar
+-- Acrescentar dcl dlc dcl.
+	public isOnOpeningWeekDays : Date ==> bool
+		isOnOpeningWeekDays(currentDate) == (
+		if(dateBegin.getNameDayId()=0 or dateEnd.getNameDayId()=0)
+		then return true
+		else
+		if(dateBegin.getNameDayId() > dateEnd.getNameDayId())
+			then return (currentDate.getNameDayId() >= dateBegin.getNameDayId() or currentDate.getNameDayId() <= dateEnd.getNameDayId())
+			else return (currentDate.getNameDayId() >= dateBegin.getNameDayId() and currentDate.getNameDayId() <= dateEnd.getNameDayId())
+		); 
+
+--mudar o lugar desta funções, fi-la da maneira errada
+	public isInTimeInterval : Date ==> bool
+		isInTimeInterval(currentDate) == (
+		
+		dcl hasStarted : bool := false;
+		dcl hasEnded : bool := false;
+		dcl onTime : bool := false; 
+			
+		if ((currentDate.year < dateBegin.year)or
+			(currentDate.year = dateBegin.year and currentDate.month < dateBegin.month) or
+				currentDate.year = dateBegin.year and currentDate.month = dateBegin.month and
+				currentDate.day < dateBegin.day)
+				then hasStarted := true
+			else hasStarted := false;
+			
+		if ((currentDate.year > dateEnd.year)or
+		(currentDate.year = dateEnd.year and currentDate.month > dateEnd.month) or
+			currentDate.year = dateEnd.year and currentDate.month = dateEnd.month and
+			currentDate.day > dateEnd.day)
+			then hasEnded := false
+		else hasEnded := true;
+		
+		if (hasStarted and hasEnded or dateBegin.year = 0 or dateBegin  =  dateEnd)
+			then onTime := true;
+		
+		return onTime;
+		);
+		
+	
+-- constructor, initializes the Rule
+
+functions
+-- TODO Define functiones here
+traces
+-- TODO Define Combinatorial Test Traces here
+end AccessRule
