@@ -1,0 +1,88 @@
+class AccessCard
+types
+
+values
+-- NAO ESQUECER DE FAZER UMA VERIFICAÇAO QUANDO TIVER A CRIAR UM CARTAO SE O ID JA EXISTE.
+instance variables
+		private expirationDate: [Date] := nil; 
+		private userObj : User;
+		static private countId : nat1 := 1;
+		private cardId : nat1;
+		private tempCard: bool;
+		
+		
+operations
+--não esquecer de fazer a verificação se o id é permitido no PhyAccControlSystem
+  public AccessCard : User ==> AccessCard
+  AccessCard(u) == (
+  cardId := countId;
+  countId := countId +1;
+  userObj := u;
+  tempCard := false;
+  return self
+  )
+  post countId = cardId + 1;
+  
+  public AccessCard : User * Date ==> AccessCard 
+  AccessCard(u, expD) == (
+   cardId := countId;
+  countId := countId +1;
+  userObj := u;
+  tempCard := true;
+  setExpirationDate(expD);
+  return self
+  )
+  pre cardId <> 0
+  post countId = cardId + 1;
+  
+  public setExpirationDate: Date ==> ()
+  	setExpirationDate(dt) == (
+  	 tempCard := true;
+  	expirationDate := dt;
+  	);
+  	
+  public removeExpDate: () ==> ()
+  	removeExpDate() == (
+  	expirationDate := nil;
+  	tempCard := false;
+  	)
+  	post expirationDate = nil;
+  	
+  public getExpirationDate: () ==> Date
+  	getExpirationDate() == (
+  	return expirationDate
+  	);
+  	
+	public getUserOfCard :() ==> User
+		getUserOfCard() ==(
+		return userObj
+		);
+		
+	public getIdCardOfUser :() ==> nat1
+		getIdCardOfUser() ==(
+		return cardId
+		)
+		pre cardId <> 0;
+
+ public changeUserofCard : User ==> ()
+ 	changeUserofCard(u) == (
+  userObj := u
+  );
+  
+  public isExpired : Date ==> bool
+		isExpired(currentDate) == (
+		if (tempCard) then
+			if ((currentDate.year > expirationDate.year)or
+				(currentDate.year = expirationDate.year and currentDate.month > expirationDate.month) or
+					currentDate.year = expirationDate.year and currentDate.month = expirationDate.month and
+					currentDate.day > expirationDate.day)
+					then return true
+				else return false
+			else return false
+		);
+  
+functions
+
+traces
+
+end AccessCard
